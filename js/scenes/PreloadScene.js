@@ -12,11 +12,11 @@ export class PreloadScene extends Phaser.Scene {
         this.load.audio('bgm', ['audio/musica retro.mp3']);
         
         // Imágenes de personajes
-        this.load.image('personaje1', 'Personajes/Personaje 1.png');
-        this.load.image('personaje2', 'Personajes/Personaje 2.png');
+        this.load.image('personaje1', 'personajes/personaje 1.png');
+        this.load.image('personaje2', 'personajes/personaje 2.png');
         
         // Spritesheets de animaciones
-        this.load.spritesheet('sprite_caminar', 'sprites/Sprite Caminar.png', {
+        this.load.spritesheet('sprite_caminar', 'sprites/sprite caminar.png', {
             frameWidth: 64,
             frameHeight: 64
         });
@@ -26,8 +26,8 @@ export class PreloadScene extends Phaser.Scene {
         });
         
         // Fondo y tileset
-        this.load.image('bg', 'Textures/Imagen de fonder.png');
-        this.load.spritesheet('tileset', 'Tiles/Tileset.png', {
+        this.load.image('bg', 'textures/imagen de fonder.png');
+        this.load.spritesheet('tileset', 'tiles/tileset.png', {
             frameWidth: 32,
             frameHeight: 32
         });

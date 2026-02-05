@@ -4,7 +4,7 @@ export const audioConfig = {
         key: 'bgm',
         path: 'audio/musica retro.mp3',
         loop: true,
-        defaultVolume: 0.1,
+        defaultVolume: 0.6,
         description: 'Música de fondo del juego'
     }
 };

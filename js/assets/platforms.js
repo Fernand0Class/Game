@@ -41,8 +41,9 @@ export function createAllPlatforms(scene, physics) {
 
     platformsConfig.forEach((platform) => {
         for (let x = platform.startX(width); x < platform.endX(width); x += platform.tileSize) {
-            platforms.create(x, platform.y(height), 'tileset')
+            platforms.create(x, platform.y(height), 'tileset', 0)
                 .setOrigin(0, 1)
+                .setDisplaySize(platform.tileSize, platform.tileSize)
                 .refreshBody();
         }
     });

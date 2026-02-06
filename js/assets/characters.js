@@ -1,4 +1,4 @@
-// Definición de personajes
+// Definición de personajes - Cada uno con su propia configuración
 export const charactersData = [
     {
         id: 0,
@@ -6,7 +6,24 @@ export const charactersData = [
         color: 0xffffff,
         unlocked: true,
         texture: 'personaje1',
-        description: 'Personaje base'
+        description: 'Personaje base',
+        scale: 1.4,
+        walkAnimationKey: 'personaje1_walk',
+        idleAnimationKey: 'personaje1_idle',
+        jumpAnimationKey: 'personaje1_jump',
+        walkSpritesheet: 'personaje1_walk',
+        idleSpritesheet: 'personaje1_idle',
+        jumpSpritesheet: 'personaje1_jump',
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     },
     {
         id: 1,
@@ -15,35 +32,123 @@ export const charactersData = [
         unlocked: true,
         texture: 'personaje2',
         description: 'Personaje secundario',
-        spritesheet: 'sprite_caminar'
+        scale: 1.4,
+        walkAnimationKey: 'personaje2_walk',
+        idleAnimationKey: 'personaje2_idle',
+        jumpAnimationKey: null,
+        walkSpritesheet: 'sprite_caminar',
+        idleSpritesheet: 'sprite_respirar',
+        jumpSpritesheet: null,
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     },
     {
         id: 2,
         name: 'Rayo',
         color: 0xff5555,
         unlocked: true,
-        description: 'Personaje eléctrico'
+        description: 'Personaje eléctrico',
+        texture: 'personaje1',
+        scale: 1.4,
+        walkAnimationKey: 'rayo_walk',
+        idleAnimationKey: 'rayo_idle',
+        jumpAnimationKey: null,
+        walkSpritesheet: null,
+        idleSpritesheet: null,
+        jumpSpritesheet: null,
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     },
     {
         id: 3,
         name: 'Sombra',
         color: 0x5555ff,
         unlocked: true,
-        description: 'Personaje oscuro'
+        description: 'Personaje oscuro',
+        texture: 'personaje1',
+        scale: 1.4,
+        walkAnimationKey: 'sombra_walk',
+        idleAnimationKey: 'sombra_idle',
+        jumpAnimationKey: null,
+        walkSpritesheet: null,
+        idleSpritesheet: null,
+        jumpSpritesheet: null,
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     },
     {
         id: 4,
         name: 'Verde',
         color: 0x55ff55,
         unlocked: false,
-        description: 'Personaje bloqueado'
+        description: 'Personaje bloqueado',
+        texture: 'personaje1',
+        scale: 1.4,
+        walkAnimationKey: 'verde_walk',
+        idleAnimationKey: 'verde_idle',
+        jumpAnimationKey: null,
+        walkSpritesheet: null,
+        idleSpritesheet: null,
+        jumpSpritesheet: null,
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     },
     {
         id: 5,
         name: 'Dorado',
         color: 0xffdd55,
         unlocked: false,
-        description: 'Personaje bloqueado'
+        description: 'Personaje bloqueado',
+        texture: 'personaje1',
+        scale: 1.4,
+        walkAnimationKey: 'dorado_walk',
+        idleAnimationKey: 'dorado_idle',
+        jumpAnimationKey: null,
+        walkSpritesheet: null,
+        idleSpritesheet: null,
+        jumpSpritesheet: null,
+        body: {
+            width: 32,
+            height: 48
+        },
+        collisionBody: {
+            widthPercent: 0.27,
+            heightPercent: 0.45,
+            offsetYPercent: 0.02,
+            offsetXPercent: -0.26
+        }
     }
 ];
 
@@ -69,8 +174,15 @@ export function getCharacterTexture(index, scene) {
     let textureKey = 'char';
     
     if (char.texture) {
-        if (char.texture === 'personaje2' && scene.textures.exists('sprite_caminar')) {
-            textureKey = 'sprite_caminar';
+        if (char.texture === 'personaje2') {
+            // Para personaje 2, preferir la versión limpia del fondo o animaciones
+            if (scene.textures.exists('personaje2_clean')) {
+                textureKey = 'personaje2_clean';
+            } else if (scene.textures.exists('sprite_caminar')) {
+                textureKey = 'sprite_caminar';
+            } else {
+                textureKey = 'personaje2';
+            }
         } else if (scene.textures.exists(char.texture + '_clean')) {
             textureKey = char.texture + '_clean';
         } else if (scene.textures.exists(char.texture)) {
@@ -81,15 +193,40 @@ export function getCharacterTexture(index, scene) {
     return textureKey;
 }
 
-// Función para obtener escala del personaje según textura
-export function getCharacterScale(textureKey) {
-    if (textureKey === 'char') {
-        return 1.6;
-    } else if (textureKey.endsWith('_walk') || textureKey === 'sprite_caminar') {
-        return 2.0;
-    } else {
-        return 1.4;
-    }
+// Función para obtener escala del personaje
+export function getCharacterScale(index) {
+    const char = getCharacter(index);
+    return char.scale || 1.4;
+}
+
+// Función para obtener configuración de animaciones
+export function getCharacterAnimationConfig(index) {
+    const char = getCharacter(index);
+    return {
+        walkAnimationKey: char.walkAnimationKey,
+        idleAnimationKey: char.idleAnimationKey,
+        jumpAnimationKey: char.jumpAnimationKey,
+        walkSpritesheet: char.walkSpritesheet,
+        idleSpritesheet: char.idleSpritesheet,
+        jumpSpritesheet: char.jumpSpritesheet
+    };
+}
+
+// Función para obtener configuración del body
+export function getCharacterBodyConfig(index) {
+    const char = getCharacter(index);
+    return char.body || { width: 32, height: 48 };
+}
+
+// Función para obtener configuración de colisión
+export function getCharacterCollisionBodyConfig(index) {
+    const char = getCharacter(index);
+    return char.collisionBody || {
+        widthPercent: 0.27,
+        heightPercent: 0.45,
+        offsetYPercent: 0.02,
+        offsetXPercent: -0.26
+    };
 }
 
 // Función para limpiar fondo del personaje 2

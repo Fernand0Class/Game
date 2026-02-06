@@ -1,8 +1,7 @@
-import { selectedCharacterIndex } from './SelectScene.js';
 import { createAllPlatforms } from '../assets/platforms.js';
-import { playWalkAnimation, playIdleAnimation, stopAnimation } from '../assets/animations.js';
+import { playWalkAnimation, playIdleAnimation, playJumpAnimation, stopAnimation } from '../assets/animations.js';
 import { playAudio, syncAudio, toggleMute } from '../assets/audio.js';
-import { getCharacter, getCharacterTexture, getCharacterScale } from '../assets/characters.js';
+import { getCharacter, getCharacterTexture, getCharacterScale, getCharacterBodyConfig, getCharacterCollisionBodyConfig } from '../assets/characters.js';
 import { setupPlayerCollision, getSpawnPoint, hasPlayerFallenOffWorld, makePlayerJump, movePlayer, resetPlayerVelocityX } from '../assets/playerUtils.js';
 
 export class PlayScene extends Phaser.Scene {
@@ -37,8 +36,10 @@ export class PlayScene extends Phaser.Scene {
         });
 
         // Crear jugador
-        const chars = this.scene.get('SelectScene').characters;
-        const custom = this.scene.get('SelectScene').customizations[selectedCharacterIndex] || {};
+        const selectScene = this.scene.get('SelectScene');
+        const selectedCharacterIndex = selectScene.index;
+        const chars = selectScene.characters;
+        const custom = selectScene.customizations[selectedCharacterIndex] || {};
         const base = chars[selectedCharacterIndex] || chars[0];
         const color = custom.color || base.color;
 
@@ -47,11 +48,19 @@ export class PlayScene extends Phaser.Scene {
             .setTint(color)
             .setCollideWorldBounds(true);
         
-        const scale = getCharacterScale(textureKey);
+        const scale = getCharacterScale(selectedCharacterIndex);
         this.player.setScale(scale);
         
-        // Configurar colisión del jugador
-        setupPlayerCollision(this.player);
+        // Guardar índice del personaje en el sprite para usarlo en update
+        this.player.characterIndex = selectedCharacterIndex;
+        
+        // Configurar hitbox específica del personaje
+        const bodyConfig = getCharacterBodyConfig(selectedCharacterIndex);
+        this.player.body.setSize(bodyConfig.width, bodyConfig.height);
+        
+        // Configurar colisión del jugador con su configuración individual
+        const collisionConfig = getCharacterCollisionBodyConfig(selectedCharacterIndex);
+        setupPlayerCollision(this.player, collisionConfig);
 
         // Colisiones con plataformas (normal, pero permitir atravesar desde abajo)
         this.physics.add.collider(this.player, platforms);
@@ -114,18 +123,19 @@ export class PlayScene extends Phaser.Scene {
         // Controles de movimiento
         if (this.cursors.left.isDown) {
             movePlayer(this.player, 'left');
-            playWalkAnimation(this.player, this);
+            playWalkAnimation(this.player, this, this.player.characterIndex);
         } else if (this.cursors.right.isDown) {
             movePlayer(this.player, 'right');
-            playWalkAnimation(this.player, this);
+            playWalkAnimation(this.player, this, this.player.characterIndex);
         } else {
             resetPlayerVelocityX(this.player);
-            playIdleAnimation(this.player, this);
+            playIdleAnimation(this.player, this, this.player.characterIndex);
         }
 
         // Salto
         if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
             makePlayerJump(this.player);
+            playJumpAnimation(this.player, this, this.player.characterIndex);
         }
 
         // Lógica para permitir atravesar plataformas desde abajo

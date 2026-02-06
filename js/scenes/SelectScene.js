@@ -118,7 +118,7 @@ export class SelectScene extends Phaser.Scene {
             this.preview.setTexture(tex);
         }
         
-        const scale = getCharacterScale(tex);
+        const scale = getCharacterScale(this.index);
         this.preview.setScale(scale);
         this.preview.setTint(color);
         

@@ -29,8 +29,8 @@ export const worldConfig = {
 // Configuración de jugador
 export const playerConfig = {
     collisionBody: {
-        widthPercent: 0.27,
-        heightPercent: 0.45,
+        widthPercent: 0.52,
+        heightPercent: 0.72,
         offsetYPercent: 0.02,
         offsetXPercent: -0.26
     },

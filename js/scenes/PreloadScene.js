@@ -9,18 +9,32 @@ export class PreloadScene extends Phaser.Scene {
 
     preload() {
         // Audio
-        this.load.audio('bgm', ['audio/musica retro.mp3']);
+        this.load.audio('bgm', ['audio/Pantalla de Pixels.mp3']);
         
         // Imágenes de personajes
         this.load.image('personaje1', 'personajes/personaje 1.png');
         this.load.image('personaje2', 'personajes/personaje 2.png');
         
-        // Spritesheets de animaciones
-        this.load.spritesheet('sprite_caminar', 'sprites/sprite caminar.png', {
+        // Spritesheets de animaciones - Personaje 1
+        this.load.spritesheet('personaje1_walk', 'Sprites/Animacion caminar personaje 1.png', {
             frameWidth: 64,
             frameHeight: 64
         });
-        this.load.spritesheet('sprite_respirar', 'sprites/sprite respirar.png', {
+        this.load.spritesheet('personaje1_idle', 'Sprites/Animacion Descanso personaje 1.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('personaje1_jump', 'Sprites/Animacion saltar personaje 1.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        
+        // Spritesheets de animaciones - Personaje 2
+        this.load.spritesheet('sprite_caminar', 'Sprites/Sprite Caminar.png', {
+            frameWidth: 64,
+            frameHeight: 64
+        });
+        this.load.spritesheet('sprite_respirar', 'Sprites/sprite respirar.png', {
             frameWidth: 64,
             frameHeight: 64
         });

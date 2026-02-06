@@ -2,7 +2,7 @@
 export const audioConfig = {
     bgm: {
         key: 'bgm',
-        path: 'audio/musica retro.mp3',
+        path: 'audio/Pantalla de Pixels.mp3',
         loop: true,
         defaultVolume: 0.6,
         description: 'Música de fondo del juego'

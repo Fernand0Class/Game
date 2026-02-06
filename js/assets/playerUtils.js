@@ -28,7 +28,7 @@ export function setupPlayerCollision(player, collisionConfig) {
 export function getSpawnPoint(width, height) {
     return {
         x: width / 2,
-        y: height - 220
+        y: height - 230
     };
 }
 

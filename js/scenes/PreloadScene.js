@@ -11,7 +11,7 @@ export class PreloadScene extends Phaser.Scene {
         // Audio
         this.load.audio('bgm', ['audio/Pantalla de Pixels.mp3']);
         
-        // Imágenes de personajes
+        // Imágenes de personajes - Usar rutas case-sensitive
         this.load.image('personaje1', 'personajes/personaje 1.png');
         this.load.image('personaje2', 'personajes/personaje 2.png');
         

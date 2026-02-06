@@ -37,10 +37,14 @@ export class PlayScene extends Phaser.Scene {
 
         // Crear jugador
         const selectScene = this.scene.get('SelectScene');
-        const selectedCharacterIndex = selectScene.index;
-        const chars = selectScene.characters;
-        const custom = selectScene.customizations[selectedCharacterIndex] || {};
-        const base = chars[selectedCharacterIndex] || chars[0];
+        // Obtener el índice del registro (más confiable) o de la escena
+        let selectedCharacterIndex = this.registry.get('selectedCharacterIndex');
+        if (selectedCharacterIndex === undefined || selectedCharacterIndex === null) {
+            selectedCharacterIndex = selectScene?.index || 0;
+        }
+        const chars = selectScene?.characters || [];
+        const custom = selectScene?.customizations?.[selectedCharacterIndex] || {};
+        const base = chars[selectedCharacterIndex] || { color: 0xffffff };
         const color = custom.color || base.color;
 
         const textureKey = getCharacterTexture(selectedCharacterIndex, this);

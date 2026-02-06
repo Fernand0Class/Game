@@ -81,6 +81,8 @@ export class SelectScene extends Phaser.Scene {
         
         start.on('pointerdown', () => {
             setSelectedCharacterIndex(this.index);
+            // Asegurar que SelectScene tenga el índice antes de iniciar PlayScene
+            this.registry.set('selectedCharacterIndex', this.index);
             this.scene.start('PlayScene');
         });
 

@@ -162,9 +162,47 @@ export class PlayScene extends Phaser.Scene {
             // Personaje 2 usa spritesheet como base para alinear animaciones + hitbox PhysicsEditor.
             textureKey = 'bw_walk_sheet';
         }
+        if (selectedCharacterIndex === 4 && this.textures.exists('hollow_walk_sheet')) {
+            // Hollow Knight (Personaje 6) usa spritesheet como base para alinear animaciones + hitbox PhysicsEditor.
+            textureKey = 'hollow_walk_sheet';
+            console.log('HOLLOW KNIGHT: Usando hollow_walk_sheet como textura');
+            // FIX TEMPORAL: Forzar spawn en posición visible
+            this.spawnPoint = { x: 400, y: 300 };
+        }
         this.player = this.matter.add.sprite(this.spawnPoint.x, this.spawnPoint.y, textureKey);
+        console.log('Player creado:', {
+            characterIndex: selectedCharacterIndex,
+            textureKey: textureKey,
+            x: this.player.x,
+            y: this.player.y,
+            visible: this.player.visible,
+            alpha: this.player.alpha,
+            scale: this.player.scale,
+            scaleX: this.player.scaleX,
+            scaleY: this.player.scaleY,
+            displayWidth: this.player.displayWidth,
+            displayHeight: this.player.displayHeight,
+            depth: this.player.depth,
+            texture: this.player.texture?.key,
+            frame: this.player.frame?.name
+        });
         this.player.setOrigin(0.5, 0.5);
         this.player.body.label = 'player';
+        
+        // Asegurar visibilidad y depth para todos los personajes
+        this.player.setDepth(100);
+        this.player.setVisible(true);
+        this.player.setAlpha(1);
+        
+        console.log('Player después de configuración:', {
+            x: this.player.x,
+            y: this.player.y,
+            visible: this.player.visible,
+            alpha: this.player.alpha,
+            depth: this.player.depth,
+            scaleX: this.player.scaleX,
+            scaleY: this.player.scaleY
+        });
 
         if (base.allowTint && color !== 0xffffff && color !== '#ffffff') this.player.setTint(color);
 
@@ -189,16 +227,24 @@ export class PlayScene extends Phaser.Scene {
         const bh = Math.round(h * standardCollisionConfig.heightPercent);
         let appliedPhysicsEditorShape = false;
         const shapePairMain = this.getCollisionShapePair(selectedCharacterIndex);
-        if (shapePairMain?.right) {
+        // TEMPORAL: Deshabilitar collision shape custom para Hollow Knight
+        if (shapePairMain?.right && selectedCharacterIndex !== 4) {
             try {
+                const saveX = this.player.x;
+                const saveY = this.player.y;
+                
                 this.playerShapeRight = clonePhysicsShape(shapePairMain.right);
                 // Evitar deformaciones: solo usar shape Left explicita (si existe).
                 // Si no existe, mantener misma colision a ambos lados.
                 this.playerShapeLeft = clonePhysicsShape(shapePairMain.left || shapePairMain.right);
                 // Black and White (id 1): mantener colision fija para evitar deformacion al girar.
-                this.playerCanSwapCollisionByFacing = (selectedCharacterIndex !== 1) && !!shapePairMain.left;
+                this.playerCanSwapCollisionByFacing = (selectedCharacterIndex !== 1 && selectedCharacterIndex !== 4) && !!shapePairMain.left;
                 this.playerUsesCustomShape = true;
                 this.player.setBody(clonePhysicsShape(this.playerShapeRight));
+                
+                // CRÍTICO: Restaurar posición después de setBody
+                this.player.setPosition(saveX, saveY);
+                
                 appliedPhysicsEditorShape = true;
             } catch (e) {
                 console.warn('No se pudo aplicar shape de PhysicsEditor al jugador principal:', e);
@@ -210,6 +256,17 @@ export class PlayScene extends Phaser.Scene {
         }
 
         this.applyFacingScale(this.playerBaseScale);
+        console.log('Player después de applyFacingScale:', {
+            characterIndex: selectedCharacterIndex,
+            baseScale: this.playerBaseScale,
+            scaleX: this.player.scaleX,
+            scaleY: this.player.scaleY,
+            displayWidth: this.player.displayWidth,
+            displayHeight: this.player.displayHeight,
+            x: this.player.x,
+            y: this.player.y,
+            visible: this.player.visible
+        });
         this.player.setFixedRotation();
         this.player.setFriction(0.85);
         this.player.setFrictionStatic(6);
@@ -387,8 +444,11 @@ export class PlayScene extends Phaser.Scene {
         }).setOrigin(0.5).setScrollFactor(0).setDepth(9999).setAlpha(0);
 
         this.showLifeLostFx = () => {
-            // 25% de probabilidad de que aparezca el overlay
-            if (Phaser.Math.FloatBetween(0, 1) < 0.75) return;
+            // Solo reproducir easter egg si el mapa actual tiene deathOverlayKey (MAPA 1 con fonder.png)
+            if (!this.chosenDeathOverlayKey) return;
+            
+            // 20% de probabilidad de que aparezca el overlay
+            if (Phaser.Math.FloatBetween(0, 1) < 0.80) return;
             
             playLifeLostFxSfx(this);
             this.trySpawnAmbientBackgroundSprite(this.chosenDeathOverlayKey, this.selectedMap);
@@ -422,6 +482,22 @@ export class PlayScene extends Phaser.Scene {
 
     update() {
         if (!this.player || this.matchEnded) return;
+        
+        // Debug para Hollow Knight
+        if (this.player.characterIndex === 4 && this.time.now % 1000 < 50) {
+            console.log('Update - Hollow Knight estado:', {
+                x: this.player.x,
+                y: this.player.y,
+                visible: this.player.visible,
+                alpha: this.player.alpha,
+                scaleX: this.player.scaleX,
+                scaleY: this.player.scaleY,
+                texture: this.player.texture?.key,
+                frame: this.player.frame?.name,
+                depth: this.player.depth
+            });
+        }
+        
         if (this.attackDebugGraphics) this.attackDebugGraphics.clear();
 
         const { width, height } = this.scale;
@@ -570,7 +646,7 @@ export class PlayScene extends Phaser.Scene {
             }
         }
 
-        this.tryPlayWalkSfx(this.mainFighter, leftDown || rightDown);
+        this.tryPlayWalkSfx(this.mainFighter, (leftDown || rightDown) && isOnGround);
 
         if (isOnGround && !this.wasJumping) {
             this.jumpsRemaining = 2;
@@ -601,22 +677,43 @@ export class PlayScene extends Phaser.Scene {
     }
 
     createSecondaryPlayer(characterIndex, spawn, slotNumber, playerName, isCpu = false) {
-        const textureKey = (characterIndex === 1 && this.textures.exists('bw_walk_sheet'))
-            ? 'bw_walk_sheet'
-            : getCharacterTexture(characterIndex, this);
+        let textureKey = getCharacterTexture(characterIndex, this);
+        if (characterIndex === 1 && this.textures.exists('bw_walk_sheet')) {
+            textureKey = 'bw_walk_sheet';
+        }
+        if (characterIndex === 4 && this.textures.exists('hollow_walk_sheet')) {
+            textureKey = 'hollow_walk_sheet';
+            console.log(`HOLLOW KNIGHT Jugador ${slotNumber}: Usando hollow_walk_sheet`);
+        }
         const sprite = this.matter.add.sprite(spawn.x, spawn.y, textureKey);
+        console.log(`Jugador ${slotNumber} creado:`, {
+            characterIndex: characterIndex,
+            textureKey: textureKey,
+            x: spawn.x,
+            y: spawn.y
+        });
         sprite.setOrigin(0.5, 0.5);
         sprite.characterIndex = characterIndex;
         sprite.body.label = `player_${slotNumber}`;
+        sprite.setVisible(true);
+        sprite.setAlpha(1);
         let usesCustomShape = false;
         let shapeRight = null;
         let shapeLeft = null;
         const shapePair = this.getCollisionShapePair(characterIndex);
-        if (shapePair?.right) {
+        // TEMPORAL: Deshabilitar collision shape custom para Hollow Knight
+        if (shapePair?.right && characterIndex !== 4) {
             try {
+                const saveX = sprite.x;
+                const saveY = sprite.y;
+                
                 shapeRight = clonePhysicsShape(shapePair.right);
                 shapeLeft = clonePhysicsShape(shapePair.left || shapePair.right);
                 sprite.setBody(clonePhysicsShape(shapeRight));
+                
+                // CRÍTICO: Restaurar posición después de setBody
+                sprite.setPosition(saveX, saveY);
+                
                 usesCustomShape = true;
             } catch (e) {
                 console.warn(`No se pudo aplicar shape de PhysicsEditor al jugador ${slotNumber}:`, e);
@@ -832,7 +929,7 @@ export class PlayScene extends Phaser.Scene {
             }
         }
 
-        this.tryPlayWalkSfx(playerState, leftDown || rightDown);
+        this.tryPlayWalkSfx(playerState, (leftDown || rightDown) && isOnGround);
 
         if (isOnGround && !playerState.wasJumping) {
             playerState.jumpsRemaining = 2;
@@ -1588,7 +1685,8 @@ export class PlayScene extends Phaser.Scene {
     }
 
     trySpawnAmbientBackgroundSprite(chosenDeathOverlayKey, selectedMap = {}) {
-        const preferredKey = selectedMap?.bgSpriteKey || selectedMap?.bgFxSpriteKey || chosenDeathOverlayKey || 'life_lost_bg_sheet';
+        // Solo usar el deathOverlayKey si está definido (no hacer fallback a 'life_lost_bg_sheet')
+        const preferredKey = selectedMap?.bgSpriteKey || selectedMap?.bgFxSpriteKey || chosenDeathOverlayKey;
         if (!preferredKey || !this.textures.exists(preferredKey)) return;
 
         const viewportW = this.cameras.main.width;

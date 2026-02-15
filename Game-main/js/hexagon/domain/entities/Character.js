@@ -84,10 +84,10 @@ export const charactersData = [
         description: 'Luchador veloz',
         scale: 2.2,
         walkAnimationKey: 'hollow_walk',
-        idleAnimationKey: null,
+        idleAnimationKey: 'hollow_idle',
         jumpAnimationKey: 'hollow_jump',
         walkSpritesheet: 'hollow_walk_sheet',
-        idleSpritesheet: null,
+        idleSpritesheet: 'hollow_jump_sheet',
         jumpSpritesheet: 'hollow_jump_sheet',
         attackAnimationKey: 'hollow_attack',
         attackSpritesheet: 'hollow_attack_sheet',
@@ -120,11 +120,9 @@ export function getCharacterTexture(index, scene) {
                 textureKey = 'personaje2';
             }
         } else if (char.texture === 'personaje6') {
-            if (scene.textures.exists('hollow_walk_sheet')) {
-                textureKey = 'hollow_walk_sheet';
-            } else {
-                textureKey = 'personaje6';
-            }
+            // Para la vista previa en SelectScene, usar personaje6
+            // Para el juego, esto será sobreescrito por hollow_walk_sheet en PlayScene
+            textureKey = 'personaje6';
         } else if (scene.textures.exists(char.texture + '_clean')) {
             textureKey = char.texture + '_clean';
         } else if (scene.textures.exists(char.texture)) {

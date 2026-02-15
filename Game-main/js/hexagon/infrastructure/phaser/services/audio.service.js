@@ -64,11 +64,11 @@ export const audioConfig = {
     },
     characterDeath: {
         byCharacter: {
-            0: { key: 'death_chonier', path: 'efectos de sonido/Efecto de morir Personaje Chonier.wav', volumeMultiplier: 1.35 },
-            1: { key: 'death_bw', path: 'efectos de sonido/Efecto de morir personaje 2.wav', volumeMultiplier: 1.0 },
-            2: { key: 'death_titan', path: 'efectos de sonido/Efecto de morir Personaje Titan.wav', volumeMultiplier: 1.0 },
-            3: { key: 'death_aurum', path: 'efectos de sonido/Efecto morir Personaje Aurum.wav', volumeMultiplier: 1.0 },
-            4: { key: 'death_hollow', path: 'efectos de sonido/Efecto de morir Personaje Hollow Night.wav', volumeMultiplier: 1.0 }
+            0: { key: 'death_chonier', path: 'efectos de sonido/Efecto de morir Personaje Chonier.wav', volumeMultiplier: 1.70 },
+            1: { key: 'death_bw', path: 'efectos de sonido/Efecto de morir personaje 2.wav', volumeMultiplier: 1.55 },
+            2: { key: 'death_titan', path: 'efectos de sonido/Efecto de morir Personaje Titan.wav', volumeMultiplier: 1.55 },
+            3: { key: 'death_aurum', path: 'efectos de sonido/Efecto morir Personaje Aurum.wav', volumeMultiplier: 1.55 },
+            4: { key: 'death_hollow', path: 'efectos de sonido/Efecto de morir Personaje Hollow Night.wav', volumeMultiplier: 1.55 }
         }
     }
 };

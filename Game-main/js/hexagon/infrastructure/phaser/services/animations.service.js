@@ -18,6 +18,7 @@ export function createAnimations(scene) {
     createAnimationFromSheet(scene, 'hollow_walk', 'hollow_walk_sheet', 10, -1);
     createAnimationFromSheet(scene, 'hollow_attack', 'hollow_attack_sheet', 12, 0);
     createAnimationFromSheet(scene, 'hollow_jump', 'hollow_jump_sheet', 8, 0);
+    createHollowIdleAnimation(scene);
     createJumpStateAnimations(scene);
 }
 
@@ -32,7 +33,10 @@ export function playWalkAnimation(player, scene, characterIndex, isOnGround = tr
 export function playIdleAnimation(player, scene, characterIndex, isOnGround = true) {
     if (!isOnGround) {
         player.anims.stop();
-        player.setFrame(0);
+        // Solo hacer setFrame si la textura tiene frames
+        if (player.frame && player.texture.frameTotal > 1) {
+            player.setFrame(0);
+        }
         return;
     }
     const config = getCharacterAnimationConfig(characterIndex);
@@ -40,7 +44,10 @@ export function playIdleAnimation(player, scene, characterIndex, isOnGround = tr
         player.anims.play(config.idleAnimationKey, true);
     } else {
         player.anims.stop();
-        player.setFrame(0);
+        // Solo hacer setFrame si la textura tiene frames
+        if (player.frame && player.texture.frameTotal > 1) {
+            player.setFrame(0);
+        }
     }
 }
 
@@ -97,6 +104,21 @@ export function createJumpStateAnimations(scene) {
         });
     } catch (e) {
         console.warn('No se pudo crear animacion aero_jump_fall:', e);
+    }
+}
+
+function createHollowIdleAnimation(scene) {
+    if (!scene.textures.exists('hollow_walk_sheet') || scene.anims.exists('hollow_idle')) return;
+
+    try {
+        scene.anims.create({
+            key: 'hollow_idle',
+            frames: [{ key: 'hollow_walk_sheet', frame: 0 }],
+            frameRate: 1,
+            repeat: 0
+        });
+    } catch (e) {
+        console.warn('No se pudo crear animacion hollow_idle:', e);
     }
 }
 

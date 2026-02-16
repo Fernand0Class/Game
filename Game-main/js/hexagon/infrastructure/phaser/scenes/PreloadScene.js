@@ -63,6 +63,7 @@ export class PreloadScene extends Phaser.Scene {
             frameWidth: 64,
             frameHeight: 64
         });
+        this.load.spritesheet('aero_attack_sheet', 'js/hexagon/infrastructure/phaser/resources/assets/Sprites/aero_ataque.png')
 
         // Spritesheets de animaciones - Black and White (Personaje 2)
         this.load.spritesheet('bw_walk_sheet', 'js/hexagon/infrastructure/phaser/resources/assets/Sprites/blackwhite_caminar.png', {

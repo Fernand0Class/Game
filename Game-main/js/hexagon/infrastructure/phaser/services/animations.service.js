@@ -3,6 +3,7 @@ import { getCharacterAnimationConfig } from '../../../domain/entities/Character.
 export function createAnimations(scene) {
     createAnimationFromSheet(scene, 'aero_walk', 'aero_walk_sheet', 10, -1);
     createAnimationFromSheet(scene, 'aero_idle', 'aero_idle_sheet', 4, -1);
+    createAnimationFromSheet(scene, 'aero_attack', 'aero_attack_sheet', 12, 0)
     createAnimationFromSheet(scene, 'bw_walk', 'bw_walk_sheet', 10, -1);
     createAnimationFromSheet(scene, 'bw_idle', 'bw_idle_sheet', 4, -1);
     createAnimationFromSheet(scene, 'bw_attack', 'bw_attack_sheet', 12, 0);
@@ -43,6 +44,17 @@ export function playIdleAnimation(player, scene, characterIndex, isOnGround = tr
         player.setFrame(0);
     }
 }
+
+export function playAttackAnimation(player, scene, characterIndex) {
+    const config = getCharacterAnimationConfig(characterIndex);
+
+    if (config.attackAnimationKey &&
+        scene.anims.exists(config.attackAnimationKey)) {
+
+        player.anims.play(config.attackAnimationKey, true);
+    }
+}
+
 
 export function playJumpStateAnimation(player, scene, characterIndex) {
     if (characterIndex === 0) {

@@ -12,9 +12,11 @@ export const charactersData = [
         walkAnimationKey: 'aero_walk',
         idleAnimationKey: 'aero_idle',
         jumpAnimationKey: 'aero_jump_ground',
+        attackAnimationKey: 'aero_attack',
         walkSpritesheet: 'aero_walk_sheet',
         idleSpritesheet: 'aero_idle_sheet',
         jumpSpritesheet: 'aero_jump_ground_sheet',
+        attackSpritesheet: 'aero_attack_sheet',
         body: { width: 32, height: 48 }
     },
     {
